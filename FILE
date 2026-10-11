@@ -1,0 +1,145 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class IWorker
+{
+public:
+    virtual void Work() = 0;
+    virtual double GetSalary() = 0;
+    virtual ~IWorker() {}
+};
+
+class Employee : public IWorker
+{
+protected:
+    string name;
+    double salary;
+
+public:
+    Employee(string name, double salary)
+    {
+        this->name = name;
+        this->salary = salary;
+    }
+
+    virtual void ShowInfo()
+    {
+        cout << "Name: " << name << endl;
+        cout << "Base salary: " << salary << endl;
+    }
+};
+
+class Programmer : public Employee
+{
+    int projects;
+
+public:
+    Programmer(string name, double salary, int projects)
+        : Employee(name, salary)
+    {
+        this->projects = projects;
+    }
+
+    void Work() override
+    {
+        cout << name << " writes code." << endl;
+    }
+
+    double GetSalary() override
+    {
+        return salary + projects * 2000;
+    }
+
+    void ShowInfo() override
+    {
+        Employee::ShowInfo();
+        cout << "Position: Programmer" << endl;
+        cout << "Projects: " << projects << endl;
+    }
+};
+
+class Designer : public Employee
+{
+    int orders;
+
+public:
+    Designer(string name, double salary, int orders)
+        : Employee(name, salary)
+    {
+        this->orders = orders;
+    }
+
+    void Work() override
+    {
+        cout << name << " creates designs." << endl;
+    }
+
+    double GetSalary() override
+    {
+        return salary + orders * 1000;
+    }
+
+    void ShowInfo() override
+    {
+        Employee::ShowInfo();
+        cout << "Position: Designer" << endl;
+        cout << "Orders: " << orders << endl;
+    }
+};
+
+class Manager : public Employee
+{
+    double sales;
+
+public:
+    Manager(string name, double salary, double sales)
+        : Employee(name, salary)
+    {
+        this->sales = sales;
+    }
+
+    void Work() override
+    {
+        cout << name << " manages the team." << endl;
+    }
+
+    double GetSalary() override
+    {
+        return salary + sales * 0.05;
+    }
+
+    void ShowInfo() override
+    {
+        Employee::ShowInfo();
+        cout << "Position: Manager" << endl;
+        cout << "Sales: " << sales << endl;
+    }
+};
+
+int main()
+{
+    IWorker* group[3];
+    group[0] = new Programmer("Vlad", 25000, 3);
+    group[1] = new Designer("Anna", 20000, 4);
+    group[2] = new Manager("Oleg", 22000, 100000);
+
+    double totalSalary = 0;
+
+    for (int i = 0; i < 3; i++)
+    {
+        group[i]->Work();
+        double employeeSalary = group[i]->GetSalary();
+        cout << "Salary: " << employeeSalary << endl << endl;
+        totalSalary += employeeSalary;
+    }
+
+    cout << "Total salary: " << totalSalary << endl;
+
+    for (int i = 0; i < 3; i++)
+    {
+        delete group[i];
+    }
+
+    return 0;
+}
